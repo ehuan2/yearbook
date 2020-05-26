@@ -8,7 +8,7 @@ def create_images(texts = []):
 
     images = []
 
-    size = (480,480)
+    size = (1048,1048)
 
     from PIL import Image, ImageDraw, ImageFont
 
@@ -16,10 +16,13 @@ def create_images(texts = []):
 
         txt = Image.new('RGBA', size, (255,255,255,255))
 
-        fnt = ImageFont.truetype('fonts/Orange_Juice.ttf', 40)
+        fnt = ImageFont.truetype('yearbook/fonts/Cherolina.ttf', 40)
 
         d = ImageDraw.Draw(txt)
-        d.text((240, 10), msg, font=fnt, fill=(random.randint(0,255),random.randint(0,255),random.randint(0,255),255))
-        txt.save(f'modified/wrote_message{author}.png')
+        # d.text((0, 10), msg, font=fnt, fill=(random.randint(0,255),random.randint(0,255),random.randint(0,255),255))
+        d.multiline_text((0, 10), msg, font=fnt, fill=(random.randint(0,255),random.randint(0,255),random.randint(0,255),255))
+        txt.save(f'yearbook/modified/wrote_message{author}.png')
+
+        print(d.multiline_textsize(msg, font=fnt))
 
     return images
