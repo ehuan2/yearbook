@@ -5,43 +5,59 @@ import random
 # this file will create the necessary images, and then return that image based on a list of texts
 # has all the helper methods
 
-# texts is a list that contains both messages and authors
-def create_images(texts=[]):
 
-    if len(texts) < 10: # if the data is small enough, does it synchronously
-        
-        for text in texts:
-            process_images(text)
-    
-    else: # does it asynchronously if the data pool is bigger
-        
-        # parallel processing version, better when handling larger quantities of data
-        with concurrent.futures.ProcessPoolExecutor() as executor:
-            executor.map(process_images, texts)
+# texts is a list that contains both messages and authors
+def create_images(texts=[], size = (1044, 1044)):
+
+    # now that we know we can resize stuff, we want to resize it so that we can fit 4 on one page
+    txt = Image.new('RGBA', size, (255, 255, 255, 255))
+    fnt = ImageFont.truetype('yearbook/fonts/Orange_Juice.ttf', 40)
+    d = ImageDraw.Draw(txt)
+
+    # we need a method to just grab all the processed texts
+    messages = []    
+    for text in texts:
+        messages.append(process_images((text, txt, fnt, d, size)))
+
+
+    messages = list(filter(lambda msg: msg, messages))
+    print(messages)
+
+    page_num = 1
+
+    for i in range(len(messages)):
+
+        message, author = messages[i]
+
+        pos_x = 10 if (i % 2) == 0 else size[0]/2
+        pos_y = 10 if int((i % 4) / 2) == 0 else size[1]/2 
+
+        d.multiline_text((pos_x, pos_y), message, font=fnt, fill=(random.randint(0,255),random.randint(0,255),random.randint(0,255),255))
+
+        if i % 4 == 3:
+            txt.save(f'yearbook/modified/wrote_message{page_num}.png')
+            page_num += 1
+
+            txt = Image.new('RGBA', size, (255, 255, 255, 255))
+            d = ImageDraw.Draw(txt)
+
+
+    txt.save(f'yearbook/modified/wrote_message{page_num}.png')
 
 
 # do processing of images here now, here is the method to call:
-def process_images(messages=[]):
+def process_images(messages=()):
 
-    size = (1024, 1024) # default size 
-
-    msg, author = messages # gets the message and author here
-
-    txt = Image.new('RGBA', size, (255, 255, 255, 255))
-    fnt = ImageFont.truetype('yearbook/fonts/Orange_Juice.ttf', 40)
-
-    d = ImageDraw.Draw(txt)
+    whole_msg, txt, fnt, d, size = messages # gets the message and author here
+    msg, author = whole_msg
 
     # gets the message
-    message = find_best_string(message=msg.split(' '), pos = 0, font=fnt, d=d, size_x = size[0]/4, size_y = size[1]/4, memo = {})
+    message = find_best_string(message=msg.split(' '), pos = 0, font=fnt, d=d, size_x = (size[0]-20)/2, size_y = (size[1]-20)/2, memo = {})
 
     if message == 'Could not resize it!':
         return None
 
-    d.multiline_text((0, 10), message, font=fnt, fill=(random.randint(0,255),random.randint(0,255),random.randint(0,255),255))
-
-    txt.save(f'yearbook/modified/wrote_message{author}.png')
-
+    return (message, author)
 
 # Steps for DP:
 # 1. Define Subproblem, just a suffix [i:]

@@ -5,9 +5,9 @@ if __name__ == '__main__':
 
     start = time.perf_counter()
     
-    messages = [('hello test test stestsetestsetse tsetsetsethellohello stetsetset\nFrom,\nEric', 'eric'), 
+    messages = [('hello test test stestse tseo stetsetset\nFrom,\nEric', 'eric'), 
     ('fdsafdsafsadfsdfsdfsdsdfsd nope test1 test2', 'me'), ('more examples from me :) are coming now', 'hello'), 
-    ('why not? Because I said so lol', 'here'), ('okay okay okay okay okay hehehehe hehehehe', 'now'), 
+    ('why not? Because I said so lol', 'here'), ('okay okay okay hehehe hehehe', 'now'), 
     ('test test test, test, test, test', 'yes')]
     
 
