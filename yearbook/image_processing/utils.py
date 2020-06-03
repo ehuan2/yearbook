@@ -23,26 +23,28 @@ def create_images(texts=[], size = (1044, 1044)):
     messages = list(filter(lambda msg: msg, messages))
     print(messages)
 
-    page_num = 1
+    if messages:
 
-    for i in range(len(messages)):
+        page_num = 1
 
-        message, author = messages[i]
+        for i in range(len(messages)):
 
-        pos_x = 10 if (i % 2) == 0 else size[0]/2
-        pos_y = 10 if int((i % 4) / 2) == 0 else size[1]/2 
+            message, author = messages[i]
 
-        d.multiline_text((pos_x, pos_y), message, font=fnt, fill=(random.randint(0,255),random.randint(0,255),random.randint(0,255),255))
+            pos_x = 10 if (i % 2) == 0 else size[0]/2
+            pos_y = 10 if int((i % 4) / 2) == 0 else size[1]/2 
 
-        if i % 4 == 3:
-            txt.save(f'yearbook/modified/wrote_message{page_num}.png')
-            page_num += 1
+            d.multiline_text((pos_x, pos_y), message, font=fnt, fill=(random.randint(0,255),random.randint(0,255),random.randint(0,255),255))
 
-            txt = Image.new('RGBA', size, (255, 255, 255, 255))
-            d = ImageDraw.Draw(txt)
+            if i % 4 == 3:
+                txt.save(f'yearbook/modified/wrote_message{page_num}.png')
+                page_num += 1
+
+                txt = Image.new('RGBA', size, (255, 255, 255, 255))
+                d = ImageDraw.Draw(txt)
 
 
-    txt.save(f'yearbook/modified/wrote_message{page_num}.png')
+        txt.save(f'yearbook/modified/wrote_message{page_num}.png')
 
 
 # do processing of images here now, here is the method to call:

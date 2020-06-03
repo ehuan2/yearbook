@@ -11,7 +11,7 @@ if __name__ == '__main__':
     ('test test test, test, test, test', 'yes')]
     
 
-    create_images(texts = messages)
+    create_images(texts = messages, size=(1044, 544))
 
     finish = time.perf_counter()
 
