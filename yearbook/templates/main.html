@@ -2,6 +2,10 @@
 
 {% block content %}
 
+{% if validate %}
+    <strong>{{validate}}</strong>
+{% endif %}
+
 <div class="content-section">
 
     <form method="POST" action="">
@@ -71,7 +75,7 @@
 
     <div class = "content-section">
         <p>{{img}}</p>
-        <img src= "{{ url_for('static', filename= 'modified/' + img) }}" alt=""/>
+        <img src= "{{url_for('static', filename = 'modified/' + img)}}" alt=""/>
     </div>
     
 {% endfor %}

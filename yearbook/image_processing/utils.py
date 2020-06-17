@@ -1,6 +1,8 @@
 from PIL import Image, ImageDraw, ImageFont
 import concurrent.futures
 import random
+import os
+import time
 
 # this file will create the necessary images, and then return that image based on a list of texts
 # has all the helper methods
@@ -8,8 +10,6 @@ import random
 
 # texts is a list that contains both messages and authors
 def create_images(texts=[], size = (1044, 1044)):
-
-    print(f"Went here {texts}")
 
     # now that we know we can resize stuff, we want to resize it so that we can fit 4 on one page
     txt = Image.new('RGBA', size, (255, 255, 255, 255))
@@ -23,30 +23,36 @@ def create_images(texts=[], size = (1044, 1044)):
 
 
     messages = list(filter(lambda msg: msg, messages))
-    print(f'Hello there {messages}')
 
-    if messages:
 
-        page_num = 1
+    # if messages exist, do img processing on them
+    if messages: 
 
-        for i in range(len(messages)):
+        current_time = time.time() # get the current time
 
-            message, author = messages[i]
+        page_num = 1 # sets the page number
 
-            pos_x = 10 if (i % 2) == 0 else size[0]/2
+        sizes = []
+
+        for i in range(len(messages)): # loops through all the  
+
+            message, author = messages[i] # gets the message and author
+
+            pos_x = 10 if (i % 2) == 0 else size[0]/2 # sets the right positioning
             pos_y = 10 if int((i % 4) / 2) == 0 else size[1]/2 
 
-            d.multiline_text((pos_x, pos_y), message, font=fnt, fill=(random.randint(0,255),random.randint(0,255),random.randint(0,255),255))
+            # writes in the correct text
+            d.multiline_text((pos_x, pos_y), message, font=fnt, fill=(random.randint(0,255),random.randint(0,255),random.randint(0,255),255)) 
 
-            if i % 4 == 3:
-                txt.save(f'yearbook/static/modified/message{page_num}.png')
+            if i % 4 == 3: # if it's the last position, ie bottom right, saves the image and moves onto the next one
+                txt.save(f'yearbook/static/modified/message_{current_time}.png')
 
                 page_num += 1
 
                 txt = Image.new('RGBA', size, (255, 255, 255, 255))
                 d = ImageDraw.Draw(txt)
 
-        txt.save(f'yearbook/static/modified/message{page_num}.png')
+        txt.save(f'yearbook/static/modified/message_{current_time}.png') # saves the last page
 
 # do processing of images here now, here is the method to call:
 def process_images(messages=()):
