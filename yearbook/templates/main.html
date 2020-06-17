@@ -1,0 +1,79 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+<div class="content-section">
+
+    <form method="POST" action="">
+        {{ messageForm.hidden_tag() }}
+        <fieldset class="form-group">
+
+            <div class="form-group">
+                {{ messageForm.name.label(class="form-control-label") }}
+                {% if messageForm.name.errors %}
+                {{ messageForm.name(class="form-control form-control-lg is-invalid") }}
+                <div class="invalid-feedback">
+                    {% for error in messageForm.name.errors %}
+                    <span>{{ error }}</span>
+                    {% endfor %}
+                </div>
+                {% else %}
+                {{ messageForm.name(class="form-control form-control-lg") }}
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                {{ messageForm.message.label(class="form-control-label") }}
+                {% if messageForm.message.errors %}
+                {{ messageForm.message(class="form-control form-control-lg is-invalid") }}
+                <div class="invalid-feedback">
+                    {% for error in form.message.errors %}
+                    <span>{{ error }}</span>
+                    {% endfor %}
+                </div>
+                {% else %}
+                {{ messageForm.message(class="form-control form-control-lg") }}
+                {% endif %}
+            </div>
+
+        </fieldset>
+
+        <div class="form-group">
+            {{ messageForm.submitMessage(class="btn btn-outline-info") }}
+        </div>
+
+    </form>
+
+</div>
+
+{% for message in messages %}
+
+    <p>{{message}}</p>
+
+{% endfor %}
+
+
+<form method="POST" action="">
+
+    {{ messageForm.hidden_tag() }}
+    
+    <fieldset class="form-group">
+
+        <div class="form-group">
+            {{ messageForm.generateImage(class="btn btn-outline-info") }}
+        </div>
+
+    </fieldset>
+
+</form>
+
+{% for img in images %}
+
+    <div class = "content-section">
+        <p>{{img}}</p>
+        <img src= "{{ url_for('static', filename= 'modified/' + img) }}" alt=""/>
+    </div>
+    
+{% endfor %}
+
+{% endblock content %}

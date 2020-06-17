@@ -9,6 +9,8 @@ import random
 # texts is a list that contains both messages and authors
 def create_images(texts=[], size = (1044, 1044)):
 
+    print(f"Went here {texts}")
+
     # now that we know we can resize stuff, we want to resize it so that we can fit 4 on one page
     txt = Image.new('RGBA', size, (255, 255, 255, 255))
     fnt = ImageFont.truetype('yearbook/fonts/Orange_Juice.ttf', 40)
@@ -21,7 +23,7 @@ def create_images(texts=[], size = (1044, 1044)):
 
 
     messages = list(filter(lambda msg: msg, messages))
-    print(messages)
+    print(f'Hello there {messages}')
 
     if messages:
 
@@ -37,15 +39,14 @@ def create_images(texts=[], size = (1044, 1044)):
             d.multiline_text((pos_x, pos_y), message, font=fnt, fill=(random.randint(0,255),random.randint(0,255),random.randint(0,255),255))
 
             if i % 4 == 3:
-                txt.save(f'yearbook/modified/wrote_message{page_num}.png')
+                txt.save(f'yearbook/static/modified/message{page_num}.png')
+
                 page_num += 1
 
                 txt = Image.new('RGBA', size, (255, 255, 255, 255))
                 d = ImageDraw.Draw(txt)
 
-
-        txt.save(f'yearbook/modified/wrote_message{page_num}.png')
-
+        txt.save(f'yearbook/static/modified/message{page_num}.png')
 
 # do processing of images here now, here is the method to call:
 def process_images(messages=()):
