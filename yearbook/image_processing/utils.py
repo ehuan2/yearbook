@@ -26,9 +26,9 @@ def create_images(texts=[], size=(1044, 1044)):
     # if messages exist, do img processing on them
     if messages:
 
-        current_time = time.time()  # get the current time
-
         for j in range(int(len(messages)/4)+1):
+
+            current_time = time.time()  # get the current time
 
             # counts the number of actual messages
             count = 0
@@ -36,24 +36,34 @@ def create_images(texts=[], size=(1044, 1044)):
             # separate the messages into groups of four
             msgs = []
 
-            # create all the messages and then determine the right size
+            # loops through, getting all the messages
             for k in range(4):
-                if messages[k + j]:
+                if len(messages) > k + j * 4:
                     msgs.append(messages[k+j][0])
                     count += 1
                 else:
                     msgs.append("")
 
+            # generates the sizes of all the texts
+            sizes_of_texts = [d.multiline_textsize(msgs[i], font=fnt)[
+                1] for i in range(4)]
+
+
             # creating the right sizes now
             new_size = (1044,
-                        max(d.multiline_textsize(msgs[0] + "\n" + msgs[2], font=fnt),
-                            d.multiline_textsize(msgs[1] + "\n" + msgs[3], font=fnt))[1] + 20)
+                        max(sizes_of_texts[0] + sizes_of_texts[2],
+                            sizes_of_texts[1] + sizes_of_texts[3]) + 60)
+
+            # creates new images with new sizes
+            txt = Image.new('RGBA', new_size, (255, 255, 255, 255))
+            d = ImageDraw.Draw(txt)
 
             for i in range(count):  # loops through all the
 
                 # sets the right positioning
                 pos_x = 10 if (i % 2) == 0 else new_size[0]/2
-                pos_y = 10 if int((i % 4) / 2) == 0 else new_size[1]/2
+                pos_y = 10 if int(
+                    (i % 4) / 2) == 0 else new_size[1] - sizes_of_texts[i % 2 + 1] - 10
 
                 # writes in the correct text
                 d.multiline_text((pos_x, pos_y), msgs[i], font=fnt, fill=(
@@ -62,9 +72,6 @@ def create_images(texts=[], size=(1044, 1044)):
             # now saves the text into the pictures based on the current time
             txt.save(
                 f'yearbook/static/modified/message_{current_time}.png')
-
-            txt = Image.new('RGBA', new_size, (255, 255, 255, 255))
-            d = ImageDraw.Draw(txt)
 
 
 # do processing of images here now, here is the method to call:
