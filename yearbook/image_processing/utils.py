@@ -9,7 +9,7 @@ import time
 
 
 # texts is a list that contains both messages and authors
-def create_images(texts=[], size = (1044, 1044)):
+def create_images(texts=[], size=(1044, 1044)):
 
     # now that we know we can resize stuff, we want to resize it so that we can fit 4 on one page
     txt = Image.new('RGBA', size, (255, 255, 255, 255))
@@ -17,51 +17,66 @@ def create_images(texts=[], size = (1044, 1044)):
     d = ImageDraw.Draw(txt)
 
     # we need a method to just grab all the processed texts
-    messages = []    
+    messages = []
     for text in texts:
         messages.append(process_images((text, txt, fnt, d, size)))
 
-
     messages = list(filter(lambda msg: msg, messages))
 
-
     # if messages exist, do img processing on them
-    if messages: 
+    if messages:
 
-        current_time = time.time() # get the current time
+        current_time = time.time()  # get the current time
 
-        page_num = 1 # sets the page number
+        for j in range(int(len(messages)/4)+1):
 
-        sizes = []
+            # counts the number of actual messages
+            count = 0
 
-        for i in range(len(messages)): # loops through all the  
+            # separate the messages into groups of four
+            msgs = []
 
-            message, author = messages[i] # gets the message and author
+            # create all the messages and then determine the right size
+            for k in range(4):
+                if messages[k + j]:
+                    msgs.append(messages[k+j][0])
+                    count += 1
+                else:
+                    msgs.append("")
 
-            pos_x = 10 if (i % 2) == 0 else size[0]/2 # sets the right positioning
-            pos_y = 10 if int((i % 4) / 2) == 0 else size[1]/2 
+            # creating the right sizes now
+            new_size = (1044,
+                        max(d.multiline_textsize(msgs[0] + "\n" + msgs[2], font=fnt),
+                            d.multiline_textsize(msgs[1] + "\n" + msgs[3], font=fnt))[1] + 20)
 
-            # writes in the correct text
-            d.multiline_text((pos_x, pos_y), message, font=fnt, fill=(random.randint(0,255),random.randint(0,255),random.randint(0,255),255)) 
+            for i in range(count):  # loops through all the
 
-            if i % 4 == 3: # if it's the last position, ie bottom right, saves the image and moves onto the next one
-                txt.save(f'yearbook/static/modified/message_{current_time}.png')
+                # sets the right positioning
+                pos_x = 10 if (i % 2) == 0 else new_size[0]/2
+                pos_y = 10 if int((i % 4) / 2) == 0 else new_size[1]/2
 
-                page_num += 1
+                # writes in the correct text
+                d.multiline_text((pos_x, pos_y), msgs[i], font=fnt, fill=(
+                    random.randint(0, 255), random.randint(0, 255), random.randint(0, 255), 255))
 
-                txt = Image.new('RGBA', size, (255, 255, 255, 255))
-                d = ImageDraw.Draw(txt)
+            # now saves the text into the pictures based on the current time
+            txt.save(
+                f'yearbook/static/modified/message_{current_time}.png')
 
-        txt.save(f'yearbook/static/modified/message_{current_time}.png') # saves the last page
+            txt = Image.new('RGBA', new_size, (255, 255, 255, 255))
+            d = ImageDraw.Draw(txt)
+
 
 # do processing of images here now, here is the method to call:
+
 def process_images(messages=()):
 
-    whole_msg, txt, fnt, d, size = messages # gets the message and author here
+    whole_msg, txt, fnt, d, size = messages  # gets the message and author here
     msg, author = whole_msg
 
     # gets the message
-    message = find_best_string(message=msg.split(' '), pos = 0, font=fnt, d=d, size_x = (size[0]-20)/2, size_y = (size[1]-20)/2, memo = {})
+    message = find_best_string(message=msg.split(' '), pos=0, font=fnt, d=d, size_x=(
+        size[0]-20)/2, size_y=(size[1]-20)/2, memo={})
 
     if message == 'Could not resize it!':
         return None
@@ -74,9 +89,11 @@ def process_images(messages=()):
 # 3. Relate Subproblems, min(area of one, vs area of another)
 # 4. Memoize or Tabulate
 # 5. Return Orig. Problem
-def find_best_string(message=[], pos=0, font=None, d=None, size_x=300, size_y = 300, memo = {}):
 
-     # if it is already memoized, it goes here
+
+def find_best_string(message=[], pos=0, font=None, d=None, size_x=300, size_y=300, memo={}):
+
+    # if it is already memoized, it goes here
     if memo.get(pos):
         return memo.get(pos)
 
@@ -86,10 +103,10 @@ def find_best_string(message=[], pos=0, font=None, d=None, size_x=300, size_y = 
         return message[pos]
 
     # creates both possibilities
-    answers = [f'''{message[pos]}\n''' + find_best_string(message=message, 
-    pos=pos+1, font=font, d=d, memo = memo),
-            f'''{message[pos]} ''' + find_best_string(message=message, 
-    pos=pos+1, font=font, d=d, memo = memo)]
+    answers = [f'''{message[pos]}\n''' + find_best_string(message=message,
+                                                          pos=pos+1, font=font, d=d, memo=memo),
+               f'''{message[pos]} ''' + find_best_string(message=message,
+                                                         pos=pos+1, font=font, d=d, memo=memo)]
 
     # if it is not resizeable for one of them, returns the other one right away
     if answers[0] == 'Could not resize it!':
@@ -108,13 +125,13 @@ def find_best_string(message=[], pos=0, font=None, d=None, size_x=300, size_y = 
     if (area0[0] > size_x and area1[0] > size_x) or (area0[1] > size_y and area1[1] > size_y):
         memo[pos] = 'Could not resize it!'
         return 'Could not resize it!'
-    elif area0[0] > size_x or area0[1] > size_y: 
+    elif area0[0] > size_x or area0[1] > size_y:
         memo[pos] = answers[1]
         return answers[1]
     elif area1[0] > size_x or area1[1] > size_y:
         memo[pos] = answers[0]
         return answers[0]
-        
+
     # the optimal choice is always the one with the least number of lines
     memo[pos] = answers[1]
     return answers[1]
