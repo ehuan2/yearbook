@@ -31,6 +31,8 @@ def index():
         if message.generateImage.data:  # generates image if that is the button pressed -> no else in case of post through other sources
             create_images(messages)
 
+            messages.clear()
+
     images = [f for f in listdir("./yearbook/static/modified")]
 
     return render_template('main.html', title='Yearbook', images=images, validate=validate,

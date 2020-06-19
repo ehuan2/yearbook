@@ -7,6 +7,8 @@ import time
 # this file will create the necessary images, and then return that image based on a list of texts
 # has all the helper methods
 
+# creating all fonts
+all_fonts = [f'./yearbook/fonts/{f}' for f in os.listdir('./yearbook/fonts/')]
 
 # texts is a list that contains both messages and authors
 def create_images(texts=[], size=(1044, 1044)):
@@ -39,7 +41,7 @@ def create_images(texts=[], size=(1044, 1044)):
             # loops through, getting all the messages
             for k in range(4):
                 if len(messages) > k + j * 4:
-                    msgs.append(messages[k+j][0])
+                    msgs.append(messages[k+j*4][0])
                     count += 1
                 else:
                     msgs.append("")
@@ -60,14 +62,22 @@ def create_images(texts=[], size=(1044, 1044)):
 
             for i in range(count):  # loops through all the
 
+                fnt = ImageFont.truetype(all_fonts[random.randint(0, len(all_fonts)-1)], 40)
+
                 # sets the right positioning
                 pos_x = 10 if (i % 2) == 0 else new_size[0]/2
                 pos_y = 10 if int(
                     (i % 4) / 2) == 0 else new_size[1] - sizes_of_texts[i % 2 + 1] - 10
 
+
+                # better generation of colours, so that they aren't too light - their sum has to be < 500
+                red = random.randint(0, 255)
+                green = random.randint(0, 500 - red)
+                blue = random.randint(0, 500 - red - green)
+
                 # writes in the correct text
                 d.multiline_text((pos_x, pos_y), msgs[i], font=fnt, fill=(
-                    random.randint(0, 255), random.randint(0, 255), random.randint(0, 255), 255))
+                    red, green, blue, 255))
 
             # now saves the text into the pictures based on the current time
             txt.save(
