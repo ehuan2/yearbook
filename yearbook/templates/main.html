@@ -3,12 +3,12 @@
 {% block content %}
 
 {% if validate %}
-    <strong>{{validate}}</strong>
+<strong>{{validate}}</strong>
 {% endif %}
 
 <div class="content-section">
 
-    <form method="POST" action="">
+    <form method="POST" action="/">
         {{ messageForm.hidden_tag() }}
         <fieldset class="form-group">
 
@@ -52,32 +52,29 @@
 
 {% for message in messages %}
 
-    <p>{{message}}</p>
+<p>{{message}}</p>
 
 {% endfor %}
 
+<form method="POST" action="/generate_image">
 
-<form method="POST" action="">
+    {{ generate_image.hidden_tag() }}
 
-    {{ messageForm.hidden_tag() }}
-    
     <fieldset class="form-group">
-
         <div class="form-group">
-            {{ messageForm.generateImage(class="btn btn-outline-info") }}
+            {{ generate_image.submitImageGeneration(class="btn btn-outline-info") }}
         </div>
-
     </fieldset>
 
 </form>
 
 {% for img in images %}
 
-    <div class = "content-section">
-        <p>{{img}}</p>
-        <img src= "{{url_for('static', filename = 'modified/' + img)}}" alt=""/>
-    </div>
-    
+<div class="content-section">
+    <p>{{img}}</p>
+    <img src="{{url_for('static', filename = 'modified/' + img)}}" alt="" />
+</div>
+
 {% endfor %}
 
 {% endblock content %}

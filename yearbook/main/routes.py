@@ -1,5 +1,5 @@
-from flask import render_template, Blueprint, request, url_for
-from yearbook.main.forms import MessageForm
+from flask import render_template, Blueprint, request, url_for, redirect
+from yearbook.main.forms import MessageForm, GenerateImageForm
 from yearbook.image_processing.utils import create_images
 from os import listdir
 
@@ -15,25 +15,29 @@ def index():
 
     message = MessageForm()
 
-    validate = ""
+    generate_image = GenerateImageForm()
 
     if message.validate_on_submit():  # if it is valid, goes here
 
-        if message.submitMessage.data:  # adds message if it's from the submit message portion
-
-            # checks if the messages are valid
-            validate = message.check_validation(
-                nme=message.name.data, msg=message.message.data)
-
-            if not validate:
-                messages.append((message.message.data, message.name.data))
-
-        if message.generateImage.data:  # generates image if that is the button pressed -> no else in case of post through other sources
-            create_images(messages)
-
-            messages.clear()
+        # adds to the messages global variable
+        messages.append((message.message.data, message.name.data))
 
     images = [f for f in listdir("./yearbook/static/modified")]
 
-    return render_template('main.html', title='Yearbook', images=images, validate=validate,
-                           messageForm=message, messages=messages)
+    return render_template('main.html', title='Yearbook', images=images, messageForm=message, generate_image=generate_image, messages=messages)
+
+
+@main.route('/generate_image', methods=['GET', 'POST'])
+def generate_image_route():
+
+    message = MessageForm()
+
+    generate_image = GenerateImageForm()
+
+    if generate_image.validate_on_submit():
+        create_images(messages)
+        messages.clear()
+
+    images = [f for f in listdir("./yearbook/static/modified")]
+
+    return redirect(url_for('main.index'))

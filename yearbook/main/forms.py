@@ -7,10 +7,16 @@ class MessageForm(FlaskForm):
     message = TextAreaField('Message')
 
     submitMessage = SubmitField('Add Message')
-    generateImage = SubmitField('Generate Images')
 
-    def check_validation(self, nme:str, msg:str):
-        if not nme:
-            return "You did not enter a name!"
-        if not msg:
-            return "You did not enter a message!"
+    def validate_name(self, name):
+        if not name.data:
+            raise ValidationError("Cannot leave blank!")
+
+
+    def validate_message(self, message):
+        if not message.data:
+            raise ValidationError("Cannot leave blank!")
+
+class GenerateImageForm(FlaskForm):
+
+    submitImageGeneration = SubmitField("Generate Images!")
