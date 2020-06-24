@@ -10,6 +10,20 @@ import time
 # creating all fonts
 all_fonts = [f'./yearbook/fonts/{f}' for f in os.listdir('./yearbook/fonts/')]
 
+def create_base64_images(image):
+    import base64
+    from io import BytesIO
+
+    buffered = BytesIO()
+    image.save(buffered, format="PNG")
+    encoded = base64.b64encode(buffered.getvalue())
+
+    encoded = encoded.decode("utf-8")
+
+    mime = "image/jpeg"
+    uri = "data:%s;base64, %s" % (mime, encoded)
+    return uri
+
 # texts is a list that contains both messages and authors
 def create_images(texts=[], size=(1044, 1044)):
 
@@ -24,6 +38,8 @@ def create_images(texts=[], size=(1044, 1044)):
         messages.append(process_images((text, txt, fnt, d, size)))
 
     messages = list(filter(lambda msg: msg, messages))
+
+    images_out = []
 
     # if messages exist, do img processing on them
     if messages:
@@ -79,9 +95,9 @@ def create_images(texts=[], size=(1044, 1044)):
                 d.multiline_text((pos_x, pos_y), msgs[i], font=fnt, fill=(
                     red, green, blue, 255))
 
-            # now saves the text into the pictures based on the current time
-            txt.save(
-                f'yearbook/static/modified/message_{current_time}.png')
+            images_out.append(create_base64_images(txt))
+
+    return images_out
 
 
 # do processing of images here now, here is the method to call:

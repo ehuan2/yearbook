@@ -68,12 +68,12 @@
 
 </form>
 
-{% for img in images %}
+{% for i in range(messages_length) %}
 
-<div class="content-section">
-    <p>{{img}}</p>
-    <img src="{{url_for('static', filename = 'modified/' + img)}}" alt="" />
-</div>
+    <div class="content-section">
+        <p>Message {{i + 1}}</p>
+        <img src="{{images[i]}}" alt="" />
+    </div>
 
 {% endfor %}
 

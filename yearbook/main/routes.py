@@ -8,6 +8,7 @@ from PIL import Image
 main = Blueprint('main', __name__)
 
 messages = []
+images = []
 
 
 @main.route('/', methods=['GET', 'POST'])
@@ -22,22 +23,24 @@ def index():
         # adds to the messages global variable
         messages.append((message.message.data, message.name.data))
 
-    images = [f for f in listdir("./yearbook/static/modified")]
+    messages_length = len(images)
 
-    return render_template('main.html', title='Yearbook', images=images, messageForm=message, generate_image=generate_image, messages=messages)
+    return render_template('main.html', title='Yearbook', images=images, messageForm=message,
+                           generate_image=generate_image, messages=messages, messages_length=messages_length)
 
 
-@main.route('/generate_image', methods=['GET', 'POST'])
+# just want to let the users post to this route, to generate the image
+@main.route('/generate_image', methods=['POST'])
 def generate_image_route():
 
-    message = MessageForm()
+    if request.method == 'POST':
 
-    generate_image = GenerateImageForm()
+        # then we want to create the images -> and add in the new images
+        # by editing the images globally
+        images.extend(create_images(messages))
 
-    if generate_image.validate_on_submit():
-        create_images(messages)
+        # we want to clear the messages after we create the new ones
         messages.clear()
 
-    images = [f for f in listdir("./yearbook/static/modified")]
-
+    # then we want to redirect to the main index
     return redirect(url_for('main.index'))
