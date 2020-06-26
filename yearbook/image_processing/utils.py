@@ -3,6 +3,7 @@ import concurrent.futures
 import random
 import os
 import time
+from math import ceil
 
 # this file will create the necessary images, and then return that image based on a list of texts
 # has all the helper methods
@@ -30,7 +31,7 @@ def create_images(texts=[], size=(1044, 1044)):
 
     # now that we know we can resize stuff, we want to resize it so that we can fit 4 on one page
     txt = Image.new('RGBA', size, (255, 255, 255, 255))
-    fnt = ImageFont.truetype('yearbook/fonts/Orange_Juice.ttf', 40)
+    fnt = ImageFont.truetype(all_fonts[0], 40)
     d = ImageDraw.Draw(txt)
 
     # we need a method to just grab all the processed texts
@@ -45,7 +46,7 @@ def create_images(texts=[], size=(1044, 1044)):
     # if messages exist, do img processing on them
     if messages:
 
-        for j in range(int(len(messages)/4)+1):
+        for j in range(ceil(len(messages)/4)):
 
             current_time = time.time()  # get the current time
 

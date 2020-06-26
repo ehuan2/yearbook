@@ -2,12 +2,8 @@
 
 {% block content %}
 
-{% if validate %}
-<strong>{{validate}}</strong>
-{% endif %}
-
 <div class="content-section">
-
+    <!-- form for the message input -->
     <form method="POST" action="/">
         {{ messageForm.hidden_tag() }}
         <fieldset class="form-group">
@@ -50,13 +46,17 @@
 
 </div>
 
+<h3>Messages ({{messages_length}})</h3>
+<!-- displays all the messages -->
 {% for message in messages %}
 
-    <p>{{message}}</p>
+    <p>Message: {{message[0]}} From: {{message[1]}}</p>
 
 {% endfor %}
+<br>
 
-{% for i in range(messages_length) %}
+<!-- shows all the images -->
+{% for i in range(images_length) %}
 
     <div class="content-section">
         <p>Message {{i + 1}}</p>

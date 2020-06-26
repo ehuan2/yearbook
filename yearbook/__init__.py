@@ -9,7 +9,7 @@ def create_sql_db(db_url = 'sqlite:///site.db'):
     from sqlalchemy import create_engine, Table, Column, Integer, String, MetaData
     
     # creating the database now:
-    engine = create_engine('sqlite:///site.db', echo = True)
+    engine = create_engine('sqlite:///site.db', echo = False)
 
     # metadata to set up tables with
     metadata = MetaData()
@@ -17,7 +17,8 @@ def create_sql_db(db_url = 'sqlite:///site.db'):
     # sets up the table
     messages = Table('messages', metadata,
         Column('id', Integer, primary_key = True),
-        Column('message', String)
+        Column('message', String),
+        Column('name', String)
     )
 
     metadata.create_all(engine)
@@ -26,18 +27,14 @@ def create_sql_db(db_url = 'sqlite:///site.db'):
     return (engine, messages) 
 
 
+# for the engine and the messages table
+global_engine, global_messages = create_sql_db()
+
 # creates the app
 def create_app(config_class = Config):
     # creates it with the set configuration
     app = Flask(__name__)
-    app.config.from_object(Config)
-    
-    # before the first request, it creates a table with an image id and a blob
-    @app.before_first_request
-    def create_tables():
-
-        create_sql_db()
-
+    app.config.from_object(config_class)
 
     # adds in the main routes
     from yearbook.main.routes import main
@@ -47,35 +44,34 @@ def create_app(config_class = Config):
     return app
 
 
-def insert_messages(message):
-    with engine.connect() as conn:
+# a method to insert new messages
+def insert_messages(message, name):
+    
+    with global_engine.connect() as conn:
 
-        messages_sql = f"""SELECT messages.message
-        FROM {table_name}"""
+        messages_sql = f"""SELECT messages.message, messages.name
+        FROM messages"""
 
         result = conn.execute(messages_sql)
 
         for row in result:
             print(row)
 
-        insert_sql = f"""
-        INSERT INTO {table_name}
-        VALUES (?);
-        ('{message}')
-        """
+        insert_sql = global_messages.insert().values(message = message, name = name)
 
         conn.execute(insert_sql)
 
 
+# a method to view all the messages
 def view_messages():
     messages = []
-    with engine.connect() as conn:
-        messages_sql = f"""SELECT messages.message
-        FROM {table_name}"""
+    with global_engine.connect() as conn:
+        messages_sql = f"""SELECT messages.message, messages.name
+        FROM messages"""
 
         result = conn.execute(messages_sql)
 
         # now gets all the messages
-        messages = [row[0] for row in result]
+        messages = [(row[0], row[1]) for row in result]
     
     return messages
