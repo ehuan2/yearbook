@@ -52,21 +52,9 @@
 
 {% for message in messages %}
 
-<p>{{message}}</p>
+    <p>{{message}}</p>
 
 {% endfor %}
-
-<form method="POST" action="/generate_image">
-
-    {{ generate_image.hidden_tag() }}
-
-    <fieldset class="form-group">
-        <div class="form-group">
-            {{ generate_image.submitImageGeneration(class="btn btn-outline-info") }}
-        </div>
-    </fieldset>
-
-</form>
 
 {% for i in range(messages_length) %}
 

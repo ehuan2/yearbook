@@ -17,6 +17,6 @@ class MessageForm(FlaskForm):
         if not message.data:
             raise ValidationError("Cannot leave blank!")
 
-class GenerateImageForm(FlaskForm):
+# class GenerateImageForm(FlaskForm):
 
-    submitImageGeneration = SubmitField("Generate Images!")
+#     submitImageGeneration = SubmitField("Generate Images!")

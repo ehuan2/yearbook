@@ -10,6 +10,7 @@ import time
 # creating all fonts
 all_fonts = [f'./yearbook/fonts/{f}' for f in os.listdir('./yearbook/fonts/')]
 
+# creates the base 64 version of images
 def create_base64_images(image):
     import base64
     from io import BytesIO
