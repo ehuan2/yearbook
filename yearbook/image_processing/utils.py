@@ -8,8 +8,6 @@ from math import ceil
 # this file will create the necessary images, and then return that image based on a list of texts
 # has all the helper methods
 
-print(os.listdir('./'))
-
 # creating all fonts
 all_fonts = [f'./yearbook/fonts/{f}' for f in os.listdir('./yearbook/fonts/')]
 
