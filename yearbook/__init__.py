@@ -28,7 +28,7 @@ def create_sql_db(db_url = 'sqlite:///site.db'):
 
 
 # for the engine and the messages table
-global_engine, global_messages = create_sql_db()
+global_engine, global_messages = create_sql_db(os.environ.get('DATABASE_URL'))
 
 # creates the app
 def create_app(config_class = Config):
