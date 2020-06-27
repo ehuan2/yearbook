@@ -9,7 +9,7 @@ def create_sql_db(db_url = 'sqlite:///site.db'):
     from sqlalchemy import create_engine, Table, Column, Integer, String, MetaData
     
     # creating the database now:
-    engine = create_engine('sqlite:///site.db', echo = False)
+    engine = create_engine(db_url, echo = False)
 
     # metadata to set up tables with
     metadata = MetaData()
