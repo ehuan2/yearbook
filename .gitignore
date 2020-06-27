@@ -140,7 +140,4 @@ cython_debug/
 # the pngs
 *.png
 
-*.otf
-*.ttf
-
 *.db
